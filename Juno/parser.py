@@ -2,9 +2,9 @@
 import json
 import datetime
 
-today = datetime.date.today()
-tomorrow = today + datetime.timedelta(days=1)
-overmorrow = today + datetime.timedelta(days=2)
+TODAY = datetime.date.today()
+TOMORROW = TODAY + datetime.timedelta(days=1)
+OVERMORROW = TODAY + datetime.timedelta(days=2)
 
 ##
 # Returns one day's weather
@@ -34,11 +34,11 @@ def getForecast(rawWeatherDump):
 
     for day in dayList:
         jsonDay = str(getDate(day))
-        if str(today) == jsonDay:
+        if str(TODAY) == jsonDay:
             jsonWeatherData["today"] = getDailyWeather(day)
-        elif str(tomorrow) == jsonDay:
+        elif str(TOMORROW) == jsonDay:
             jsonWeatherData["tomorrow"] = getDailyWeather(day)
-        elif str(overmorrow) == jsonDay:
+        elif str(OVERMORROW) == jsonDay:
             jsonWeatherData["overmorrow"] = getDailyWeather(day)
     return jsonWeatherData
 
@@ -49,5 +49,5 @@ def getForecast(rawWeatherDump):
 # @return               Forecasted weather in an easily parsable format.
 def parseData(rawWeatherDump):
     jsonToday = rawWeatherDump["today"]
-    return {"state": jsonToday["state"], "city": jsonToday["city"], "day": str(today),
+    return {"state": jsonToday["state"], "city": jsonToday["city"], "day": str(TODAY),
             "weather": getForecast(rawWeatherDump)}
