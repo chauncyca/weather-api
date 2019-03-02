@@ -49,5 +49,5 @@ def getForecast(rawWeatherDump):
 # @return               Forecasted weather in an easily parsable format.
 def parseData(rawWeatherDump):
     jsonToday = rawWeatherDump["today"]
-    return {"state": jsonToday["state"], "city": jsonToday["city"], "day": str(TODAY),
-            "weather": getForecast(rawWeatherDump)}
+    return {"state": {jsonToday["state"]: {"city": {jsonToday["city"]: {"day": str(TODAY),
+                                                                        "weather": getForecast(rawWeatherDump)}}}}}
