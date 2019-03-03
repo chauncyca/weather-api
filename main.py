@@ -1,5 +1,5 @@
 #!/usr/bin/python
 
-from Juno import handler
+from Juno import server
 
-print(handler.pollCacheForLocation({"state": "Texas", "city": "Fort Worth"}))
+server.run()
