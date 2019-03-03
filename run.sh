@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-python -m Juno.start
+python -m Juno.server.run()
