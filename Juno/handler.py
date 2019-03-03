@@ -56,11 +56,13 @@ def pollCacheForLocation(searchData):
 def updateCache(rawWeatherDump):
     parsedDump = parser.parseData(rawWeatherDump)
 
-    for state, cityList in parsedDump["state"].items():
-        for city, weatherData in cityList["city"].items():
-             pass
+    # Find the name of the state we will be updating.
+    # There will only be one "state" in our json dict.
+    # All other information is a "don't care" state at this time.
+    for state in parsedDump["state"]:
+         pass
 
-    with open(CACHE_LOCATION) as f:
+    with open(CACHE_LOCATION, "r+") as f:
         data = json.load(f)
 
         if not json.dumps(data):
@@ -75,3 +77,6 @@ def updateCache(rawWeatherDump):
                 data["state"].update(parsedDump["state"])
             else:
                 data["state"][state]["city"].update(parsedDump["state"][state]["city"])
+        f.seek(0)
+        f.write(json.dumps(data))
+        f.truncate()
