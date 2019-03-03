@@ -7,9 +7,22 @@ from . import parser
 
 CACHE_LOCATION = "cache.json"
 
+##
+# Returns true if input date is today.
+#
+# @param stringDate String representation of utc date.
+# @return           True if input matches today's date.
 def isCurrent(stringDate):
     return str(datetime.date.today()) == stringDate
 
+##
+# Returns the cached weather values for selected city.
+#
+# @param jsonCache  Data read from the cache, will be searched through.
+# @param searchData Json string of city and state names.
+#                   Format: {"city" : "Seattle", "state":"Washington"}
+# @return           Found values.
+#                   Format: {"day":"2019-03-02", "weather" {}}
 def findWeatherVals(jsonCache, searchData):
     for state, cityList in jsonCache["state"].items():
         if state == searchData["state"]:
@@ -18,6 +31,13 @@ def findWeatherVals(jsonCache, searchData):
                     return values
     return {}
 
+##
+# Polls the cache and returns weather data if available.
+#
+# @param searchData Json string of city and state names.
+#                   Format: {"city" : "Seattle", "state":"Washington"}
+# @return           Found values if any exist.
+#                   Format: {"day":"2019-03-02", "weather" {}}
 def pollCacheForLocation(searchData):
     with open(CACHE_LOCATION) as f:
         jsonCache = json.load(f)
@@ -25,10 +45,14 @@ def pollCacheForLocation(searchData):
     weatherData = findWeatherVals(jsonCache, searchData)
 
     if weatherData == {} or not isCurrent(weatherData["day"]):
-        return {"dataIntegrity": False}
+        return {}
     else:
         return weatherData["weather"]
 
+##
+# Updates the cache with new weather data.
+#
+# @param rawWeatherDump Raw json returned by Amazon's weather api.
 def updateCache(rawWeatherDump):
     parsedDump = parser.parseData(rawWeatherDump)
 
