@@ -2,6 +2,7 @@
 
 import json
 import datetime
+
 from . import parser
 
 CACHE_LOCATION = "cache.json"
@@ -30,5 +31,23 @@ def pollCacheForLocation(searchData):
 
 def updateCache(rawWeatherDump):
     parsedDump = parser.parseData(rawWeatherDump)
+
+    for state, cityList in parsedDump["state"].items():
+        for city, weatherData in cityList["city"].items():
+             pass
+
     with open(CACHE_LOCATION) as f:
         data = json.load(f)
+
+        if not json.dumps(data):
+            data = parsedDump
+        else:
+            foundState = False
+            for cachedState, cityList in data["state"].items():
+                if cachedState == state:
+                    foundState = True
+
+            if not foundState:
+                data["state"].update(parsedDump["state"])
+            else:
+                data["state"][state]["city"].update(parsedDump["state"][state]["city"])
