@@ -1,11 +1,10 @@
 #!/usr/bin/python
 
-import json
 import datetime
+import json
 
+from . import config
 from . import parser
-
-CACHE_LOCATION = "cache.json"
 
 ##
 # Returns true if input date is today.
@@ -39,7 +38,7 @@ def _findWeatherVals_(jsonCache, searchData):
 # @return           Found values if any exist.
 #                   Format: {"day":"2019-03-02", "weather" {}}
 def getWeather(searchData):
-    with open(CACHE_LOCATION) as f:
+    with open(config.CACHE_LOCATION) as f:
         jsonCache = json.load(f)
 
     weatherData = _findWeatherVals_(jsonCache, searchData)
@@ -62,7 +61,7 @@ def updateCache(rawWeatherDump):
     for state in parsedDump["state"]:
          pass
 
-    with open(CACHE_LOCATION, "r+") as f:
+    with open(config.CACHE_LOCATION, "r+") as f:
         data = json.load(f)
 
         if not json.dumps(data):

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
-from . import server
-from . import parser
+from . import config
 from . import handler
+from . import parser
+from . import server
