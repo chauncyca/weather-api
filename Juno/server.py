@@ -3,14 +3,8 @@
 import datetime
 import socketserver
 
+from . import config
 from . import handler
-
-HOST = "127.0.0.1"
-UDP_PORT = 55400
-
-STAY_ALIVE = True
-LOG_FILE = "visitors.txt"
-
 
 ##
 # Class: JunoListener extends socketserver.BaseRequestHandler
@@ -35,11 +29,11 @@ class JunoListener(socketserver.BaseRequestHandler):
         socket.sendto(response, self.client_address)
 
     def log(self, city, state):
-        with open(LOG_FILE, "a") as f:
+        with open(config.LOG_FILE, "a") as f:
             outstring = datetime.date.today() + ", " + city + ", " + state
             f.write(outstring)
 
 
 def run():
-    server = socketserver.UDPServer((HOST, UDP_PORT), JunoListener)
+    server = socketserver.UDPServer((config.HOST, config.UDP_PORT), JunoListener)
     server.serve_forever()
