@@ -2,6 +2,7 @@
 //const socket = new WebSocket('ws://' + window.location.host + ':8080');
 
 var junoRequest;
+
 $.ajax({
   url: "http://ip-api.com/json",
   type: 'GET',
@@ -9,7 +10,7 @@ $.ajax({
   {
     junoRequest = '{'
                   +'"city":"' + json.city +'", '
-                  +'"state":"' + json.regionName +'", '
+                  +'"state":"' + json.regionName
                   + '}';
     console.log(junoRequest);
   },
