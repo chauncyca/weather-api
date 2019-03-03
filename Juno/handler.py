@@ -12,7 +12,7 @@ CACHE_LOCATION = "cache.json"
 #
 # @param stringDate String representation of utc date.
 # @return           True if input matches today's date.
-def isCurrent(stringDate):
+def _isCurrent_(stringDate):
     return str(datetime.date.today()) == stringDate
 
 ##
@@ -23,7 +23,7 @@ def isCurrent(stringDate):
 #                   Format: {"city" : "Seattle", "state":"Washington"}
 # @return           Found values.
 #                   Format: {"day":"2019-03-02", "weather" {}}
-def findWeatherVals(jsonCache, searchData):
+def _findWeatherVals_(jsonCache, searchData):
     for state, cityList in jsonCache["state"].items():
         if state == searchData["state"]:
             for city, values in cityList["city"].items():
@@ -38,13 +38,13 @@ def findWeatherVals(jsonCache, searchData):
 #                   Format: {"city" : "Seattle", "state":"Washington"}
 # @return           Found values if any exist.
 #                   Format: {"day":"2019-03-02", "weather" {}}
-def pollCacheForLocation(searchData):
+def getWeather(searchData):
     with open(CACHE_LOCATION) as f:
         jsonCache = json.load(f)
 
-    weatherData = findWeatherVals(jsonCache, searchData)
+    weatherData = _findWeatherVals_(jsonCache, searchData)
 
-    if weatherData == {} or not isCurrent(weatherData["day"]):
+    if weatherData == {} or not _isCurrent_(weatherData["day"]):
         return {}
     else:
         return weatherData["weather"]
@@ -80,3 +80,5 @@ def updateCache(rawWeatherDump):
         f.seek(0)
         f.write(json.dumps(data))
         f.truncate()
+
+
