@@ -40,7 +40,6 @@ class JunoListener(socketserver.BaseRequestHandler):
             f.write(outstring)
 
 
-
 ##
 # Class: JunoWebSocketServer
 #        A simple to use websocket server that makes use of an event queue.
@@ -71,6 +70,7 @@ class JunoWebSocketServer(object):
                 await eventHandler.handleEvent()
             else:
                 listener.cancel()
+
 
 ##
 # Class: JunoEventHandler
