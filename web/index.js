@@ -11,7 +11,8 @@ socket.onmessage = function(e){
 socket.onerror = function(e) {console.log("Socket error", e.data);};
 
 var junoRequest;
-junoRequest = getLocation();
+
+getLocation();
 
 socket.onopen = ()=> socket.send(junoRequest)
 
@@ -22,7 +23,6 @@ function parseResponse(response) {
         getWeatherFromApi();
     }
     else if (jsonResponse.action == "updatedCache"){
-        junoRequest = getLocation();
         console.log("Juno req: ", junoRequest);
         socket.send(junoRequest);
     }
@@ -59,9 +59,10 @@ function getLocation(){
     $.ajax({
     url: "http://ip-api.com/json",
     type: 'GET',
+    async: false,
     success: function(json)
     {
-        return '{"action":"retrieve",'
+        junoRequest = '{"action":"retrieve",'
                   +'"city":"' + json.city +'", '
                   +'"state":"' + json.regionName + '"'
                   + '}';
