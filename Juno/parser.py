@@ -6,14 +6,19 @@ TODAY = datetime.date.today()
 TOMORROW = TODAY + datetime.timedelta(days=1)
 OVERMORROW = TODAY + datetime.timedelta(days=2)
 
+
 ##
 # Returns one day's weather
 #
 # @param jsonOneDay Json string representing exactly one day of weather.
 # @return           Description, high, and low for the day in json format.
 def getDailyWeather(jsonOneDay):
+    print(jsonOneDay)
+    print({"description": jsonOneDay["description"], "high": jsonOneDay["highTemperature"],
+            "low": jsonOneDay["lowTemperature"]})
     return {"description": jsonOneDay["description"], "high": jsonOneDay["highTemperature"],
             "low": jsonOneDay["lowTemperature"]}
+
 
 ##
 # Returns one day's date
@@ -23,6 +28,7 @@ def getDailyWeather(jsonOneDay):
 def getDate(jsonOneDay):
     return jsonOneDay["utcTime"][:10]
 
+
 ##
 # Returns a three day forecast.
 #
@@ -30,17 +36,24 @@ def getDate(jsonOneDay):
 # @return               Three days of description, high, and low for the day in json format.
 def getForecast(rawWeatherDump):
     jsonWeatherData = json.loads(str({}))
-    dayList = rawWeatherDump["daily"]
 
+    day = rawWeatherDump["today"]
+    today = str(getDate(day))
+
+    if str(TODAY) == today:
+        jsonWeatherData["today"] = getDailyWeather(day)
+
+    dayList = rawWeatherDump["daily"]
     for day in dayList:
         jsonDay = str(getDate(day))
-        if str(TODAY) == jsonDay:
-            jsonWeatherData["today"] = getDailyWeather(day)
-        elif str(TOMORROW) == jsonDay:
+        if str(TOMORROW) == jsonDay:
+            print("Got tomorrow")
             jsonWeatherData["tomorrow"] = getDailyWeather(day)
         elif str(OVERMORROW) == jsonDay:
+            print("Got overmorrow")
             jsonWeatherData["overmorrow"] = getDailyWeather(day)
     return jsonWeatherData
+
 
 ##
 # Returns a the Juno approved weather forecast.

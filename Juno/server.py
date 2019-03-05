@@ -7,14 +7,13 @@ import logging
 import threading
 import websockets
 
-import socketserver
-
 from . import config
 from . import handler
 
 STAY_ALIVE = True
 
 logging.basicConfig(filename=config.ERROR_LOG)
+
 
 ##
 # Class: JunoWebSocketServer
@@ -54,7 +53,6 @@ class JunoWebSocketServer(object):
                 await eventHandler.sendMessage(outboundMsg)
             else:
                 sender.cancel()
-
 
 
 ##
@@ -99,22 +97,24 @@ class JunoEventHandler(object):
             eventMessage = json.loads(eventToHandle)
         except json.decoder.JSONDecodeError as e:
             pass
-            #logging.exception("Failed to parse json string: " + str(e))
 
         try:
-            logging.debug("eventMessage: " + str(eventMessage))
+            logging.debug("\neventMessage: " + str(eventMessage))
 
             # If the client asks for the weather AND we have a city AND we have a state, we can return the weather.
-            if "retrieve" in eventMessage and "city" in eventMessage and "state" in eventMessage:
-                self.log(eventMessage["city"], eventMessage["state"])
-                response = handler.getWeather(eventMessage)
+
+            if "action" in eventMessage and "city" in eventMessage and "state" in eventMessage:
+                if eventMessage["action"] == "retrieve":
+                    self.log(eventMessage["city"], eventMessage["state"])
+                    response = handler.getWeather(eventMessage)
+                else:
+                    response = {"action": "failure"}
             elif not eventMessage == {}:
-                # elif eventMessage["action"] == "update":
                 handler.updateCache(eventMessage)
-                response = {"action":"updatedCache"}
+                response = {"action": "updatedCache"}
         # If we fail to parse a string, log the error and the input string.
         except Exception:
-            logging.exception("Received unexpected JSON data")
+            logging.exception("\nReceived unexpected JSON data")
         await self.outgoing.put(json.dumps(response))
 
     ##
