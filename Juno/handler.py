@@ -62,18 +62,30 @@ def updateCache(rawWeatherDump):
          pass
 
     with open(config.CACHE_LOCATION, "r+") as f:
-        data = json.load(f)
+        data = ""
+        try:
+            data = json.load(f)
+        except:
+            # If the cache does not currently contain json data, this will fail.
+            pass
 
-        if not json.dumps(data):
+        if not json.dumps(data) or not data:
             data = parsedDump
         else:
+            stateFieldExist = True
             foundState = False
-            for cachedState, cityList in data["state"].items():
-                if cachedState == state:
-                    foundState = True
-
+            try:
+                for cachedState, cityList in data["state"].items():
+                    if cachedState == state:
+                        foundState = True
+            except KeyError:
+                # Key errors mean that the "state" field does not exist. So we did not find state.
+                stateFieldExist = False
             if not foundState:
-                data["state"].update(parsedDump["state"])
+                if stateFieldExist:
+                    data["state"].update(parsedDump["state"])
+                else:
+                    data = parsedDump
             else:
                 data["state"][state]["city"].update(parsedDump["state"][state]["city"])
         f.seek(0)

@@ -3,6 +3,7 @@
 import asyncio
 import datetime
 import json
+import logging
 import threading
 import websockets
 
@@ -13,6 +14,7 @@ from . import handler
 
 STAY_ALIVE = True
 
+logging.basicConfig(filename=config.ERROR_LOG)
 
 ##
 # Class: JunoWebSocketServer
@@ -87,25 +89,32 @@ class JunoEventHandler(object):
     async def handleEvent(self):
         eventToHandle = await self.incoming.get()
 
-        response = {}
+        logging.debug("eventToHandle: " + eventToHandle)
+
+        response = {"action":"sendReq"}
+
+        eventMessage = {}
 
         try:
             eventMessage = json.loads(eventToHandle)
+        except json.decoder.JSONDecodeError as e:
+            pass
+            #logging.exception("Failed to parse json string: " + str(e))
 
+        try:
+            logging.debug("eventMessage: " + str(eventMessage))
 
             # If the client asks for the weather AND we have a city AND we have a state, we can return the weather.
-            if eventMessage["action"] == "retrieve" and eventMessage["city"] and eventMessage["state"]:
+            if "retrieve" in eventMessage and "city" in eventMessage and "state" in eventMessage:
                 self.log(eventMessage["city"], eventMessage["state"])
                 response = handler.getWeather(eventMessage)
-
-            elif eventMessage["action"] == "update":
-                 handler.updateCache(eventMessage)
-
+            elif not eventMessage == {}:
+                # elif eventMessage["action"] == "update":
+                handler.updateCache(eventMessage)
+                response = {"action":"updatedCache"}
         # If we fail to parse a string, log the error and the input string.
-        except Exception as e:
-            with open(config.ERROR_LOG, "a") as f:
-                outstring = "Input: " + eventToHandle + "\nError: " + str(e) + "\n\n"
-                f.write(outstring)
+        except Exception:
+            logging.exception("Received unexpected JSON data")
         await self.outgoing.put(json.dumps(response))
 
     ##
