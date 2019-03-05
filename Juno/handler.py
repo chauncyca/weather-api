@@ -44,7 +44,7 @@ def getWeather(searchData):
     weatherData = _findWeatherVals_(jsonCache, searchData)
 
     if weatherData == {} or not _isCurrent_(weatherData["day"]):
-        return {}
+        return config.FAILURE_MESSAGE
     else:
         return weatherData["weather"]
 

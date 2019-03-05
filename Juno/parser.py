@@ -13,9 +13,6 @@ OVERMORROW = TODAY + datetime.timedelta(days=2)
 # @param jsonOneDay Json string representing exactly one day of weather.
 # @return           Description, high, and low for the day in json format.
 def getDailyWeather(jsonOneDay):
-    print(jsonOneDay)
-    print({"description": jsonOneDay["description"], "high": jsonOneDay["highTemperature"],
-            "low": jsonOneDay["lowTemperature"]})
     return {"description": jsonOneDay["description"], "high": jsonOneDay["highTemperature"],
             "low": jsonOneDay["lowTemperature"]}
 
@@ -47,10 +44,8 @@ def getForecast(rawWeatherDump):
     for day in dayList:
         jsonDay = str(getDate(day))
         if str(TOMORROW) == jsonDay:
-            print("Got tomorrow")
             jsonWeatherData["tomorrow"] = getDailyWeather(day)
         elif str(OVERMORROW) == jsonDay:
-            print("Got overmorrow")
             jsonWeatherData["overmorrow"] = getDailyWeather(day)
     return jsonWeatherData
 

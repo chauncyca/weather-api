@@ -89,7 +89,7 @@ class JunoEventHandler(object):
 
         logging.debug("eventToHandle: " + eventToHandle)
 
-        response = {"action":"sendReq"}
+        response = config.FAILURE_MESSAGE
 
         eventMessage = {}
 
