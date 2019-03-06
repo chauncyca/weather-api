@@ -12,7 +12,7 @@ OVERMORROW = TODAY + datetime.timedelta(days=2)
 #
 # @param jsonOneDay Json string representing exactly one day of weather.
 # @return           Description, high, and low for the day in json format.
-def getDailyWeather(jsonOneDay):
+def _getDailyWeather(jsonOneDay):
     return {"description": jsonOneDay["description"], "high": jsonOneDay["highTemperature"],
             "low": jsonOneDay["lowTemperature"]}
 
@@ -22,7 +22,7 @@ def getDailyWeather(jsonOneDay):
 #
 # @param jsonOneDay Json string representing exactly one day of weather.
 # @return           Utc date for the input day.
-def getDate(jsonOneDay):
+def _getDate(jsonOneDay):
     return jsonOneDay["utcTime"][:10]
 
 
@@ -31,22 +31,22 @@ def getDate(jsonOneDay):
 #
 # @param rawWeatherDump Raw json string returned from the Amazon weather api.
 # @return               Three days of description, high, and low for the day in json format.
-def getForecast(rawWeatherDump):
+def _getForecast(rawWeatherDump):
     jsonWeatherData = json.loads(str({}))
 
     day = rawWeatherDump["today"]
-    today = str(getDate(day))
+    today = str(_getDate(day))
 
     if str(TODAY) == today:
-        jsonWeatherData["today"] = getDailyWeather(day)
+        jsonWeatherData["today"] = _getDailyWeather(day)
 
     dayList = rawWeatherDump["daily"]
     for day in dayList:
-        jsonDay = str(getDate(day))
+        jsonDay = str(_getDate(day))
         if str(TOMORROW) == jsonDay:
-            jsonWeatherData["tomorrow"] = getDailyWeather(day)
+            jsonWeatherData["tomorrow"] = _getDailyWeather(day)
         elif str(OVERMORROW) == jsonDay:
-            jsonWeatherData["overmorrow"] = getDailyWeather(day)
+            jsonWeatherData["overmorrow"] = _getDailyWeather(day)
     return jsonWeatherData
 
 
@@ -58,4 +58,4 @@ def getForecast(rawWeatherDump):
 def parseData(rawWeatherDump):
     jsonToday = rawWeatherDump["today"]
     return {"state": {jsonToday["state"]: {"city": {jsonToday["city"]: {"day": str(TODAY),
-                                                                        "weather": getForecast(rawWeatherDump)}}}}}
+                                                                        "weather": _getForecast(rawWeatherDump)}}}}}
