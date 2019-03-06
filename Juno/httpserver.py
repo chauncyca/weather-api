@@ -56,4 +56,5 @@ def run():
     except:
         logging.exception("Unresolved exception, Juno Server failure.")
     httpd.server_close()
-    logging.log("Server Stops at %s" % str(datetime.date.today()))
+    stopMsg = "Server Stops at %s" % str(datetime.datetime.now())
+    logging.warning(stopMsg)
