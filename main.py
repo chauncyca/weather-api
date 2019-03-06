@@ -1,5 +1,5 @@
 #!/usr/bin/python
 
-from Juno import server
+from Juno import httpserver
 
-server.run()
+httpserver.run()
