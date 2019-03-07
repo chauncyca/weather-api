@@ -37,8 +37,8 @@ class JunoHttpServer(http.server.BaseHTTPRequestHandler):
     # Method to retrieve and write the data to the page.
     def _returnData(self):
         self._setHeaders()
-        self.output = handler.getWeather()
-        self.wfile.write(json.dumps(self.output).encode())
+        output = handler.getWeather()
+        self.wfile.write(json.dumps(output).encode())
 
 ##
 # Sets logging variables and starts the server.
